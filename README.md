@@ -10,9 +10,7 @@ Planned new features:
 shadowsocks
 ===========
 
-[![PyPI version]][PyPI]
 [![Build Status]][Travis CI]
-[![Coverage Status]][Coverage]
 
 A fast tunnel proxy that helps you bypass firewalls.
 
@@ -77,10 +75,6 @@ Apache License
 
 
 
-[Build Status]:      https://img.shields.io/travis/shadowsocks/shadowsocks/master.svg?style=flat
-[Coverage Status]:   https://jenkins.shadowvpn.org/result/shadowsocks
-[Coverage]:          https://jenkins.shadowvpn.org/job/Shadowsocks/ws/PYENV/py34/label/linux/htmlcov/index.html
-[PyPI]:              https://pypi.python.org/pypi/shadowsocks
-[PyPI version]:      https://img.shields.io/pypi/v/shadowsocks.svg?style=flat
-[Travis CI]:         https://travis-ci.org/shadowsocks/shadowsocks
+[Build Status]:      https://img.shields.io/travis/johnthedong/shadowsocks/master.svg?style=flat
+[Travis CI]:         https://travis-ci.org/johnthedong/shadowsocks
 

@@ -22,6 +22,7 @@ setup(
     [console_scripts]
     sslocal = shadowsocks.local:main
     ssserver = shadowsocks.server:main
+    ssdigitalocean = shadowsocks.digitalocean:main
     """,
     classifiers=[
         'License :: OSI Approved :: Apache Software License',

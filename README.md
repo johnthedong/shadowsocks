@@ -1,7 +1,7 @@
 # Shadowsocks Auto-installer branch
 
 Planned new features:
-- Centralized deploy system for 1 button install to DigitalOcean.
+- Centralized deploy system for 1 button install on Ubuntu 14.01+ systems.
 - Refactorings for a more streamlined install system
 - More features in the pipeline
 

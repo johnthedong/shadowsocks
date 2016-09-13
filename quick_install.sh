@@ -154,12 +154,17 @@ function check_presence(){
 
 # get all prerequisites for shadowsocks
 function get_prerequisites(){
-     # Download libsodium file
+    # Download libsodium file
     if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz; then
-        wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/johnthedong/shadowsocks
+        wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/johnthedong/shadowsocks_easy_install
         echo "Failed to download libsodium!"
         exit 1
     fi
+    # Download shadowsocks itself
+    if ! wget --no-check-certificate -O shadowsocks-master.zip https://github.com/shadowsocks/shadowsocks/archive/master.zip; then
+        echo "Failed to download Shadowsocks file!"
+        exit 1
+    fi 
 }
 
 # actual installation script
@@ -171,7 +176,11 @@ function install_ss(){
 # remove installation files
 # also clear up temp files
 function install_cleanup(){
-
+    cd ${cur_dir}
+    rm -f shadowsocks-master.zip
+    rm -rf shadowsocks-master
+    rm -f libsodium-1.0.11.tar.gz
+    rm -rf libsodium-1.0.11
 }
 
 function install_shadowsocks(){

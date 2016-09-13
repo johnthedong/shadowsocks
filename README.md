@@ -5,7 +5,11 @@ Planned new features:
 - Refactorings for a more streamlined install system
 - More features in the pipeline
 
+### Usage
 
+Debian / Ubuntu:
+
+    sudo bash quick_install.sh
 
 shadowsocks
 ===========

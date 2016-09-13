@@ -31,9 +31,9 @@ cur_dir=$(pwd)
 # get public ip
 pub_ip=$(curl -s http://whatismyip.akamai.com/)
 
-# constants
-john_libsodium_url=''
-john_shadowsocks_url=''
+# backup urls to get the files
+john_libsodium_url=https://github.com/johnthedong/shadowsocks_easy_installer/blob/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz
+john_shadowsocks_url=https://github.com/johnthedong/shadowsocks_easy_installer/blob/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip
 
 clear
 
@@ -154,17 +154,35 @@ function check_presence(){
 
 # get all prerequisites for shadowsocks
 function get_prerequisites(){
-    # Download libsodium file
+    echo "Downloading libsodium"
     if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz; then
-        wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/johnthedong/shadowsocks_easy_install
-        echo "Failed to download libsodium!"
+        echo "Failed to get libsodium from the original author"
+        echo "Downloading libsodium from the backup location"
+        if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz john_libsodium_url; then
+            echo "Failed to download libsodium from both sources!!"
+            exit 1
+    fi
+    
+    tar zxf libsodium-1.0.11.tar.gz
+    if [ $? -ne 0 ]; then
+        echo "Failed to untar libsodium!"
         exit 1
     fi
-    # Download shadowsocks itself
+
+    echo "Downloading shadowsocks"
     if ! wget --no-check-certificate -O shadowsocks-master.zip https://github.com/shadowsocks/shadowsocks/archive/master.zip; then
-        echo "Failed to download Shadowsocks file!"
+        echo "Failed to get shadowsocks from the original author"
+        echo "Downloading shadowsocks from the backup location"
+        if ! wget --no-check-certificate -O shadowsocks-master.zip john_shadowsocks_url; then
+            echo "Failed to download Shadowsocks file!"
+            exit 1
+    fi
+
+    unzip -q shadowsocks-master.zip
+    if [ $? -ne 0 ]; then
+        echo "Failed to unzip shadowsocks-master.zip!"
         exit 1
-    fi 
+    fi
 }
 
 # actual installation script

@@ -5,12 +5,12 @@
 # thanks to teddysun and kengz
 
 #TODO:
-# [] move script to johnthedong/shadowsocks_installer_script
+# [x] move script to johnthedong/shadowsocks_easy_installer
 # [] check_presence
 # [x] optimize_system
-# [] get_prerequisites
+# [x] get_prerequisites
 # [] install_ss
-# [] install_cleanup
+# [x] install_cleanup
 
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
@@ -31,9 +31,6 @@ cur_dir=$(pwd)
 # get public ip
 pub_ip=$(curl -s http://whatismyip.akamai.com/)
 
-# backup urls to get the files
-john_libsodium_url=https://github.com/johnthedong/shadowsocks_easy_installer/blob/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz
-john_shadowsocks_url=https://github.com/johnthedong/shadowsocks_easy_installer/blob/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip
 
 clear
 
@@ -59,6 +56,15 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
 
+# check if ss is already in the system, and/or running
+function check_presence(){
+    # check syspath if present
+    # check ps if it's running behind
+    # check version if it's up to date
+    echo "Checking if Shadowsocks is already installed"
+}
+
+
 # Disable selinux
 function disable_selinux(){
     if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then
@@ -80,12 +86,6 @@ function write_if_not_present(){
 # -----------------------------Main functions----------------------------
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
-
-# check if ss is already installed
-# todo: if installed, clear
-function check_presence(){
-
-}
 
 # optimize based on 
 # https://www.vpndada.com/how-to-setup-shadowsocks-server-on-amazon-ec2/
@@ -145,22 +145,17 @@ function optimize_system(){
     modprobe tcp_htcp
 }
 
-# check if ss is already running
-function check_presence(){
-# check syspath if present
-# check ps if it's running behind
-# check version if it's up to date
-}
 
 # get all prerequisites for shadowsocks
 function get_prerequisites(){
     echo "Downloading libsodium"
-    if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz; then
+    if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz || curl -OkL https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz); then
         echo "Failed to get libsodium from the original author"
         echo "Downloading libsodium from the backup location"
-        if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz john_libsodium_url; then
+        if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz || curl -OkL https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz); then
             echo "Failed to download libsodium from both sources!!"
             exit 1
+        fi
     fi
     
     tar zxf libsodium-1.0.11.tar.gz
@@ -170,12 +165,9 @@ function get_prerequisites(){
     fi
 
     echo "Downloading shadowsocks"
-    if ! wget --no-check-certificate -O shadowsocks-master.zip https://github.com/shadowsocks/shadowsocks/archive/master.zip; then
-        echo "Failed to get shadowsocks from the original author"
-        echo "Downloading shadowsocks from the backup location"
-        if ! wget --no-check-certificate -O shadowsocks-master.zip john_shadowsocks_url; then
-            echo "Failed to download Shadowsocks file!"
-            exit 1
+    if ! (wget --no-check-certificate -O shadowsocks-master.zip https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip || curl -OkL https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip); then
+        echo "Failed to download Shadowsocks file!"
+        exit 1
     fi
 
     unzip -q shadowsocks-master.zip
@@ -211,12 +203,12 @@ function install_shadowsocks(){
     select yn in "Yes" "No"; do
         case $yn in
             Yes ) optimize_system; break;;
-    No ) break;;
-    esac
+            No ) break;;
+        esac
     done
 
     get_prerequisites
-    install_ss
+    # install_ss
     install_cleanup
 }
 

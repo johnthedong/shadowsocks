@@ -1,7 +1,22 @@
 #! /bin/bash
 # optimize, prep and install sserver
 # Works on Ubuntu 14.04 and above
+# Created by John Koh. (github: johnthedong)
 # thanks to teddysun and kengz
+
+#TODO:
+# [] move script to johnthedong/shadowsocks_installer_script
+# [] check_presence
+# [x] optimize_system
+# [] get_prerequisites
+# [] install_ss
+# [] install_cleanup
+
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+# -------------------------Setup preinstall files------------------------
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # Fail on the first error; killable by SIGINT
 set -e
@@ -15,6 +30,10 @@ export PATH
 cur_dir=$(pwd)
 # get public ip
 pub_ip=$(curl -s http://whatismyip.akamai.com/)
+
+# constants
+john_libsodium_url=''
+john_shadowsocks_url=''
 
 clear
 
@@ -34,12 +53,18 @@ echo "
 # thanks @kengz
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+# -------------------------Helper/shared functions-----------------------
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+
 # Disable selinux
 function disable_selinux(){
-if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then
-    sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-    setenforce 0
-fi
+    if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then
+        sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+        setenforce 0
+    fi
 }
 
 function write_if_not_present(){
@@ -48,6 +73,18 @@ function write_if_not_present(){
         sudo sed -i '' "/$1/d" $2
     fi
     sudo echo $1 >> $2
+}
+
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+# -----------------------------Main functions----------------------------
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+
+# check if ss is already installed
+# todo: if installed, clear
+function check_presence(){
+
 }
 
 # optimize based on 
@@ -103,13 +140,37 @@ function optimize_system(){
             No ) write_if_not_present 'net.ipv4.tcp_congestion_control = hybla' sysctl_conf; break;;
         esac
     done
-    
+
     sudo sysctl -p
     modprobe tcp_htcp
 }
 
+# check if ss is already running
+function check_presence(){
+# check syspath if present
+# check ps if it's running behind
+# check version if it's up to date
+}
+
+# get all prerequisites for shadowsocks
+function get_prerequisites(){
+     # Download libsodium file
+    if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz; then
+        wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/johnthedong/shadowsocks
+        echo "Failed to download libsodium!"
+        exit 1
+    fi
+}
+
+# actual installation script
 function install_ss(){
+    # setup autorun on boot
     write_if_not_present '/usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start' /etc/rc.local
+}
+
+# remove installation files
+# also clear up temp files
+function install_cleanup(){
 
 }
 
@@ -123,8 +184,8 @@ function install_shadowsocks(){
     select yn in "Yes" "No"; do
         case $yn in
             Yes ) optimize_system; break;;
-            No ) break;;
-        esac
+    No ) break;;
+    esac
     done
 
     get_prerequisites
@@ -136,13 +197,14 @@ function install_shadowsocks(){
 action=$1
 [ -z $1 ] && action=install
 case "$action" in 
-install)
-    install_shadowsocks
+    install)
+        install_shadowsocks
+        ;;
+    uninstall)
+        uninstall_shadowsocks
     ;;
-uninstall)
-    uninstall_shadowsocks
-    ;;
-*)
+    *)
+    #if fails/bad commands given
     echo "Argument error! [${action} ]"
     echo "Usage: `basename $0` {install|uninstall}"
     ;;

@@ -22,6 +22,11 @@
 set -e
 trap "exit" INT
 
+# constants
+ss_backup_url="https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip"
+ls_url="https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz"
+ls_backup_url="https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz"
+
 # set path
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
@@ -149,10 +154,10 @@ function optimize_system(){
 # get all prerequisites for shadowsocks
 function get_prerequisites(){
     echo "Downloading libsodium"
-    if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz || curl -OkL https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz); then
+    if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz $ls_url || curl -OkL $ls_url); then
         echo "Failed to get libsodium from the original author"
         echo "Downloading libsodium from the backup location"
-        if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz || curl -OkL https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz); then
+        if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz $ls_backup_url || curl -OkL $ls_backup_url); then
             echo "Failed to download libsodium from both sources!!"
             exit 1
         fi
@@ -165,7 +170,7 @@ function get_prerequisites(){
     fi
 
     echo "Downloading shadowsocks"
-    if ! (wget --no-check-certificate -O shadowsocks-master.zip https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip || curl -OkL https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/shadowsocks/shadowsocks-master.zip); then
+    if ! (wget --no-check-certificate -O shadowsocks-master.zip $ss_backup_url || curl -OkL $ss_backup_url); then
         echo "Failed to download Shadowsocks file!"
         exit 1
     fi
@@ -221,7 +226,7 @@ case "$action" in
         ;;
     uninstall)
         uninstall_shadowsocks
-    ;;
+        ;;
     *)
     #if fails/bad commands given
     echo "Argument error! [${action} ]"

@@ -131,8 +131,8 @@ function optimize_system(){
     "
 
     limits_conf=/etc/security/limits.conf
-    write_if_not_present '* soft nofile 51200' limits_conf
-    write_if_not_present '* hard nofile 51200' limits_conf
+    write_if_not_present '* soft nofile 51200' ${limits_conf}
+    write_if_not_present '* hard nofile 51200' ${limits_conf}
     ulimit -n 51200
 
     echo "
@@ -140,24 +140,24 @@ function optimize_system(){
     "
     sysctl_conf=/etc/sysctl.conf
 
-    write_if_not_present 'fs.file-max = 51200' sysctl_conf
-    write_if_not_present 'net.core.rmem_max = 67108864' sysctl_conf
-    write_if_not_present 'net.core.wmem_max = 67108864' sysctl_conf
-    write_if_not_present 'net.core.netdev_max_backlog = 250000' sysctl_conf
-    write_if_not_present 'net.core.somaxconn = 4096' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_syncookies = 1' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_tw_reuse = 1' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_tw_recycle = 0' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_fin_timeout = 30' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_keepalive_time = 1200' sysctl_conf
-    write_if_not_present 'net.ipv4.ip_local_port_range = 10000 65000' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_max_syn_backlog = 8192' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_max_tw_buckets = 5000' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_fastopen = 3' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_mem = 25600 51200 102400' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_rmem = 4096 87380 67108864' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_wmem = 4096 65536 67108864' sysctl_conf
-    write_if_not_present 'net.ipv4.tcp_mtu_probing = 1' sysctl_conf
+    write_if_not_present 'fs.file-max = 51200' ${sysctl_conf}
+    write_if_not_present 'net.core.rmem_max = 67108864' ${sysctl_conf}
+    write_if_not_present 'net.core.wmem_max = 67108864' ${sysctl_conf}
+    write_if_not_present 'net.core.netdev_max_backlog = 250000' ${sysctl_conf}
+    write_if_not_present 'net.core.somaxconn = 4096' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_syncookies = 1' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_tw_reuse = 1' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_tw_recycle = 0' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_fin_timeout = 30' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_keepalive_time = 1200' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.ip_local_port_range = 10000 65000' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_max_syn_backlog = 8192' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_max_tw_buckets = 5000' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_fastopen = 3' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_mem = 25600 51200 102400' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_rmem = 4096 87380 67108864' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_wmem = 4096 65536 67108864' ${sysctl_conf}
+    write_if_not_present 'net.ipv4.tcp_mtu_probing = 1' ${sysctl_conf}
 
     # if latency too high, use hybla, else htcp
     echo "
@@ -166,8 +166,8 @@ function optimize_system(){
     "
     select yn in "Yes" "No"; do
         case $yn in
-            Yes ) write_if_not_present 'net.ipv4.tcp_congestion_control = htcp' sysctl_conf; break;;
-            No ) write_if_not_present 'net.ipv4.tcp_congestion_control = hybla' sysctl_conf; break;;
+            Yes ) write_if_not_present 'net.ipv4.tcp_congestion_control = htcp' ${sysctl_conf}; break;;
+            No ) write_if_not_present 'net.ipv4.tcp_congestion_control = hybla' ${sysctl_conf}; break;;
         esac
     done
 

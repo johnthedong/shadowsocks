@@ -260,7 +260,7 @@ function install_ss(){
 
         echo "Running Shadowsocks..."
         # Run shadowsocks in the background
-        /etc/init.d/shadowsocks start
+        /usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
 
         echo '
             Finished installing Shadowsocks.

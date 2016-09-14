@@ -246,7 +246,7 @@ function install_ss(){
         fi
     done
 
-    config_shadowsocks $ss_port $ss_port
+    config_shadowsocks $ss_port $ss_password
 
     # actual installation
     cd ${cur_dir}/shadowsocks-master

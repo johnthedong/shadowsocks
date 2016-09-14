@@ -211,10 +211,6 @@ function get_prerequisites(){
     fi
 }
 
-function a_test(){
-    
-}
-
 # actual installation script
 function install_ss(){
     read -p "Please provide your preferred password (by default a random password will be generated):" ss_password
@@ -284,24 +280,23 @@ function install_cleanup(){
 }
 
 function install_shadowsocks(){
-    a_test
-    # check_compatibility
-    # check_presence
+    check_compatibility
+    check_presence
 
-    # echo "
-    # Optimize server for shadowsocks?
-    # Do not select if the optimizations have already been done.
-    # "
-    # select yn in "Yes" "No"; do
-    #     case $yn in
-    #         Yes ) optimize_system; break;;
-    #         No ) break;;
-    #     esac
-    # done
+    echo "
+    Optimize server for shadowsocks?
+    Do not select if the optimizations have already been done.
+    "
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) optimize_system; break;;
+            No ) break;;
+        esac
+    done
 
-    # get_prerequisites
-    # install_ss
-    # install_cleanup
+    get_prerequisites
+    install_ss
+    install_cleanup
 }
 
 # Initialization step

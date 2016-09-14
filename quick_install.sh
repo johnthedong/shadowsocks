@@ -119,6 +119,7 @@ function check_compatibility(){
 # optimize based on 
 # https://www.vpndada.com/how-to-setup-shadowsocks-server-on-amazon-ec2/
 function optimize_system(){
+    cd
     echo "
     ================================================
     Optimizing system for Shadowsocks
@@ -172,6 +173,7 @@ function optimize_system(){
 
     sudo sysctl -p
     modprobe tcp_htcp
+    cd ${cur_dir}
 }
 
 

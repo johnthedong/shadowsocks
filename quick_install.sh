@@ -264,6 +264,7 @@ function install_ss(){
 
         echo "
             Finished installing Shadowsocks.
+            Encryption Type:aes-256-cfb
             Server IP: ${pub_ip}
             Server Port: ${ss_port}
             Password: ${ss_password}

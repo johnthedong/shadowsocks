@@ -1,15 +1,14 @@
 # Shadowsocks Auto-installer branch
 
-Planned new features:
-- Centralized deploy system for 1 button install on Ubuntu 14.01+ systems.
-- Refactorings for a more streamlined install system
-- More features in the pipeline
+## About
+
+Centralized deploy system for 1 button install on Ubuntu 14.01+ systems.
 
 ### Usage
 
 Debian / Ubuntu:
 
-    sudo bash quick_install.sh
+    bash quick_install.sh
 
 shadowsocks
 ===========

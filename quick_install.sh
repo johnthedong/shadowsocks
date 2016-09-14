@@ -87,9 +87,9 @@ function disable_selinux(){
 function write_if_not_present(){
     if grep -i $1 $2; then
         # delete line if present. clears commented out same entries
-        sudo sed -i '' "/$1/d" $2
+        sed -i '' "/$1/d" $2
     fi
-    sudo echo $1 >> $2
+    echo $1 >> $2
 }
 
 # -----------------------------------------------------------------------
@@ -133,7 +133,7 @@ function optimize_system(){
     limits_conf=/etc/security/limits.conf
     write_if_not_present '* soft nofile 51200' limits_conf
     write_if_not_present '* hard nofile 51200' limits_conf
-    sudo ulimit -n 51200
+    ulimit -n 51200
 
     echo "
     => Tweak sysctl settings.

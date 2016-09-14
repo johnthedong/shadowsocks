@@ -262,12 +262,12 @@ function install_ss(){
         # Run shadowsocks in the background
         /usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
 
-        echo '
+        echo "
             Finished installing Shadowsocks.
             Server IP: ${pub_ip}
             Server Port: ${shadowsocksport}
             Password: ${shadowsockspwd}
-        '
+        "
     else
         echo "Something went wrong in installing. Please report at https://github.com/johnthedong/shadowsocks_easy_installer"
     fi

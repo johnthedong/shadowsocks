@@ -92,6 +92,24 @@ function write_if_not_present(){
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
 
+function check_compatibility(){
+    dist=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
+    if [ "$dist" != "Ubuntu" ]; then
+        echo ""
+        echo "
+            Not running on Ubuntu.
+            Quick_install has not been tested on other distributions.
+            Are you sure you want to continue? (will fail if you're on CentOS or others)
+        "
+        select yn in "Yes" "No"; do
+            case $yn in
+                Yes ) break;;
+                No ) exit 1;;
+            esac
+        done
+    fi
+}
+
 # optimize based on 
 # https://www.vpndada.com/how-to-setup-shadowsocks-server-on-amazon-ec2/
 function optimize_system(){
@@ -199,6 +217,7 @@ function install_cleanup(){
 }
 
 function install_shadowsocks(){
+    check_compatibility
     check_presence
 
     echo "

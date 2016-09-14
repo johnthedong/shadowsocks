@@ -2,7 +2,6 @@
 # optimize, prep and install sserver
 # Works on Ubuntu 14.04 and above
 # Created by John Koh. (github: johnthedong)
-# thanks to teddysun and kengz
 
 #TODO:
 # [x] move script to johnthedong/shadowsocks_easy_installer
@@ -11,6 +10,10 @@
 # [x] get_prerequisites
 # [] install_ss
 # [x] install_cleanup
+# [] write a proper attribution
+
+# Future Roadmap:
+# Package into Chef 
 
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
@@ -171,6 +174,11 @@ function optimize_system(){
 
 # get all prerequisites for shadowsocks
 function get_prerequisites(){
+
+    # Get all system requirements
+    apt-get -y update
+    apt-get -y install python python-dev python-pip python-setuptools python-m2crypto curl wget unzip gcc swig automake make perl cpio build-essential
+
     echo "Downloading libsodium"
     if ! (wget --no-check-certificate -O libsodium-1.0.11.tar.gz $ls_url || curl -OkL $ls_url); then
         echo "Failed to get libsodium from the original author"

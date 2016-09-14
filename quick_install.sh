@@ -250,7 +250,6 @@ function install_ss(){
 
     # check if is installed correctly
     if [ -f /usr/bin/ssserver ] || [ -f /usr/local/bin/ssserver ]; then
-        chmod +x /etc/init.d/shadowsocks
         # setup autorun on boot
         echo "Making Shadowsocks run on boot..."
         write_if_not_present '/usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start' /etc/rc.local

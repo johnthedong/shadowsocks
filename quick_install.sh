@@ -213,6 +213,21 @@ function get_prerequisites(){
     fi
 }
 
+config_shadowsocks(){
+    cat > /etc/shadowsocks.json<<-EOF
+{
+    "server":"0.0.0.0",
+    "server_port":$1,
+    "local_address":"127.0.0.1",
+    "local_port":1080,
+    "password":"$2",
+    "timeout":300,
+    "method":"aes-256-cfb",
+    "fast_open":false
+}
+EOF
+}
+
 # actual installation script
 function install_ss(){
     read -p "Please provide your preferred password (by default a random password will be generated):" ss_password
@@ -231,18 +246,7 @@ function install_ss(){
         fi
     done
 
-    echo '
-    {
-        "server":"0.0.0.0",
-        "server_port":${ss_port},
-        "local_address":"127.0.0.1",
-        "local_port":1080,
-        "password":"${ss_password}",
-        "timeout":300,
-        "method":"aes-256-cfb",
-        "fast_open":false
-    }
-    ' > /etc/shadowsocks.json
+    config_shadowsocks $ss_port $ss_port
 
     # actual installation
     cd ${cur_dir}/shadowsocks-master

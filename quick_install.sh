@@ -5,10 +5,10 @@
 
 #TODO:
 # [x] move script to johnthedong/shadowsocks_easy_installer
-# [] check_presence
+# [] check_presence (check for PSID and kill if there)
 # [x] optimize_system
 # [x] get_prerequisites
-# [] install_ss
+# [x] install_ss
 # [x] install_cleanup
 # [] write a proper attribution
 
@@ -265,8 +265,8 @@ function install_ss(){
         echo "
             Finished installing Shadowsocks.
             Server IP: ${pub_ip}
-            Server Port: ${shadowsocksport}
-            Password: ${shadowsockspwd}
+            Server Port: ${ss_port}
+            Password: ${ss_password}
         "
     else
         echo "Something went wrong in installing. Please report at https://github.com/johnthedong/shadowsocks_easy_installer"

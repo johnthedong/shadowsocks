@@ -86,10 +86,9 @@ function disable_selinux(){
 
 function write_if_not_present(){
     if grep -i "$1" "$2"; then
-        # delete line if present. clears commented out same entries
-        sed -i '' "/$1/d" "$2"
+    else
+        echo "$1" >> "$2"
     fi
-    echo "$1" >> "$2"
 }
 
 # -----------------------------------------------------------------------

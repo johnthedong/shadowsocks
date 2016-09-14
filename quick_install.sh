@@ -86,6 +86,7 @@ function disable_selinux(){
 
 function write_if_not_present(){
     if grep -i "$1" "$2"; then
+        true
     else
         echo "$1" >> "$2"
     fi

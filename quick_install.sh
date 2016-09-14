@@ -30,6 +30,9 @@ ss_backup_url="https://github.com/johnthedong/shadowsocks_easy_installer/raw/joh
 ls_url="https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz"
 ls_backup_url="https://github.com/johnthedong/shadowsocks_easy_installer/raw/john/server-automation/requirements/libsodium/libsodium-1.0.11.tar.gz"
 
+# defaults
+default_port='8889'
+
 # set path
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
@@ -208,10 +211,66 @@ function get_prerequisites(){
     fi
 }
 
+function a_test(){
+    
+}
+
 # actual installation script
 function install_ss(){
-    # setup autorun on boot
-    write_if_not_present '/usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start' /etc/rc.local
+    read -p "Please provide your preferred password (by default a random password will be generated):" ss_password
+    [ -z "$ss_password" ] && ss_password=`openssl rand -base64 6`
+
+    while true
+    do
+        read -p "Please provide your preferred port between 1-65535 (by default 8889 will be the port):" ss_port
+        [ -z "$ss_port" ] && ss_port=$default_port
+        # check if only int inputted
+        if ! [[ -n ${ss_port//[0-9]/} ]]; then
+            # check if int is between 1 - 65535
+            if [ ${ss_port} -ge 1 ] && [ ${ss_port} -le 65535 ]; then
+                break
+            fi
+        fi
+    done
+
+    echo '
+    {
+        "server":"0.0.0.0",
+        "server_port":${ss_port},
+        "local_address":"127.0.0.1",
+        "local_port":1080,
+        "password":"${ss_password}",
+        "timeout":300,
+        "method":"aes-256-cfb",
+        "fast_open":false
+    }
+    ' > /etc/shadowsocks.json
+
+    # actual installation
+    cd ${cur_dir}/shadowsocks-master
+    python setup.py install --record /usr/local/shadowsocks_install.log
+
+    # check if is installed correctly
+    if [ -f /usr/bin/ssserver ] || [ -f /usr/local/bin/ssserver ]; then
+        chmod +x /etc/init.d/shadowsocks
+        # setup autorun on boot
+        echo "Making Shadowsocks run on boot..."
+        write_if_not_present '/usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start' /etc/rc.local
+
+        echo "Running Shadowsocks..."
+        # Run shadowsocks in the background
+        /etc/init.d/shadowsocks start
+
+        echo '
+            Finished installing Shadowsocks.
+            Server IP: ${pub_ip}
+            Server Port: ${shadowsocksport}
+            Password: ${shadowsockspwd}
+        '
+    else
+        echo "Something went wrong in installing. Please report at https://github.com/johnthedong/shadowsocks_easy_installer"
+    fi
+
 }
 
 # remove installation files
@@ -225,23 +284,24 @@ function install_cleanup(){
 }
 
 function install_shadowsocks(){
-    check_compatibility
-    check_presence
+    a_test
+    # check_compatibility
+    # check_presence
 
-    echo "
-    Optimize server for shadowsocks?
-    Do not select if the optimizations have already been done.
-    "
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) optimize_system; break;;
-            No ) break;;
-        esac
-    done
+    # echo "
+    # Optimize server for shadowsocks?
+    # Do not select if the optimizations have already been done.
+    # "
+    # select yn in "Yes" "No"; do
+    #     case $yn in
+    #         Yes ) optimize_system; break;;
+    #         No ) break;;
+    #     esac
+    # done
 
-    get_prerequisites
+    # get_prerequisites
     # install_ss
-    install_cleanup
+    # install_cleanup
 }
 
 # Initialization step
